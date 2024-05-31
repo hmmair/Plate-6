@@ -1,0 +1,78 @@
+import java.util.LinkedList;
+import java.util.Scanner;
+
+public class problem1 {
+    private int V;
+    private LinkedList<Integer>[] adj;
+
+    public problem1(int v) {
+        V = v;
+        adj = new LinkedList[v];
+        for (int i = 0; i < v; ++i) {
+            adj[i] = new LinkedList<>();
+        }
+    }
+
+    void addEdge(int v, int w) {
+        adj[v].add(w);
+        adj[w].add(v);
+    }
+
+    private void DFS(int v, boolean[] visited) {
+        visited[v] = true;
+        for (int n : adj[v]) {
+            if (!visited[n])
+                DFS(n, visited);
+        }
+    }
+
+    boolean isConnected() {
+        boolean[] visited = new boolean[V];
+        DFS(0, visited);
+        for (boolean b : visited) {
+            if (!b) return false;
+        }
+        return true;
+    }
+
+    int countConnectedComponents() {
+        boolean[] visited = new boolean[V];
+        int count = 0;
+        for (int v = 0; v < V; ++v) {
+            if (!visited[v]) {
+                DFS(v, visited);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the number of vertices:");
+        int V = scanner.nextInt();
+
+        problem1 graph = new problem1(V);
+
+        System.out.println("Enter the number of edges:");
+        int E = scanner.nextInt();
+
+        System.out.println("Enter the edges (format: u v):");
+        for (int i = 0; i < E; ++i) {
+            int u = scanner.nextInt();
+            int v = scanner.nextInt();
+            graph.addEdge(u, v);
+        }
+
+        if (graph.isConnected()) {
+            System.out.println("The graph is connected.");
+        } else {
+            System.out.println("The graph is not connected.");
+            int connectedComponents = graph.countConnectedComponents();
+            System.out.println("The graph has " + connectedComponents + " connected component(s).");
+        }
+
+        scanner.close();
+    }
+}
