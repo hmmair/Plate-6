@@ -1,0 +1,62 @@
+import java.util.Scanner;
+
+public class problem3 {
+    private int[][] adjacencyMatrix;
+    private boolean[] visited;
+  7   private boolean[] stack;
+
+    public problem3(int size) {
+        adjacencyMatrix = new int[size][size];
+        visited = new boolean[size];
+        stack = new boolean[size];
+    }
+
+    public boolean detectCycle(int source) {
+        visited[source] = true;
+        stack[source] = true;
+
+        for (int destination = 0; destination < adjacencyMatrix[source].length; destination++) {
+            if (adjacencyMatrix[source][destination] == 1) {
+                if (!visited[destination]) {
+                    if (detectCycle(destination)) {
+                        return true;
+                    }
+                } else if (stack[destination]) {
+                    return true;
+                }
+            }
+        }
+
+        stack[source] = false;
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of nodes in the graph: ");
+        int number_of_nodes = scanner.nextInt();
+
+        problem3 cycleDetection = new problem3(number_of_nodes);
+
+        System.out.println("Enter the adjacency matrix (1 for connected, 0 for not connected):");
+        for (int i = 0; i < number_of_nodes; i++) {
+            for (int j = 0; j < number_of_nodes; j++) {
+                cycleDetection.adjacencyMatrix[i][j] = scanner.nextInt();
+            }
+        }
+
+        System.out.print("Enter the source node for cycle detection: ");
+        int source = scanner.nextInt();
+
+        boolean hasCycle = cycleDetection.detectCycle(source);
+
+        if (hasCycle) {
+            System.out.println("The graph contains a cycle.");
+        } else {
+            System.out.println("The graph does not contain any cycle.");
+        }
+
+        scanner.close();
+    }
+}
